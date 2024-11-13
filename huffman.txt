@@ -1,0 +1,41 @@
+clc;
+clear all;
+close all;
+
+% Get number of symbols from the user
+x = input('Enter number of symbols: ');
+
+% Preallocate arrays for symbols and probabilities
+symbols = zeros(1, x);
+p = zeros(1, x);
+
+% Collect symbols and probabilities
+for m = 1:x
+    symbols(m) = input('Enter the symbol number: ');
+    p(m) = input('Enter the probability: ');
+end
+
+% Check if probabilities sum to 1
+if sum(p) ~= 1
+    error('Probabilities must sum to 1');
+end
+
+% Generate Huffman dictionary
+[dict, avglen] = huffmandict(symbols, p);
+
+% Encode the symbols using Huffman encoding
+hcode = huffmanenco(symbols, dict);
+
+% Decode the symbols to verify the encoding
+dsig = huffmandeco(hcode, dict);
+
+% Calculate entropy
+Hx = 0;
+for m = 1:x
+    Hx = Hx + (p(m) * (-log(p(m)) / log(2)));
+end
+display(Hx);
+
+% Calculate and display efficiency
+Efficiency = (Hx / avglen) * 100;
+disp(['Efficiency: ', num2str(Efficiency), '%']);
